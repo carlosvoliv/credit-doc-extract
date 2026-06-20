@@ -79,7 +79,8 @@ html, body { height: 100%; }
 /* ── Workspace: responsive, no squish ──────────────────────────────────── */
 .workspace {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  /* min(330px, 100%) so a column never exceeds the container — no h-scroll. */
+  grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr));
   gap: 22px;
   align-items: start;
 }
@@ -165,24 +166,13 @@ html, body { height: 100%; }
 
 /* Brand gradient summary card */
 .summary {
-  display: flex;
-  gap: 18px;
   padding: 20px 22px;
   border-radius: var(--ft-radius);
   background: var(--ft-header-grad);
   color: #fff;
   box-shadow: var(--ft-card-shadow);
 }
-.summary__icon {
-  flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--ft-radius);
-  background: rgba(255, 255, 255, 0.14);
-}
-.summary__body { flex: 1; min-width: 0; }
+.summary__body { min-width: 0; }
 .summary__row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .summary__type { font-family: var(--ft-font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
 .summary__id { font-family: var(--ft-font-mono); font-size: 11px; opacity: 0.75; word-break: break-all; }

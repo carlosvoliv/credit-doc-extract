@@ -215,7 +215,6 @@ async function extract() {
 
           <template v-else>
             <div class="summary">
-              <div class="summary__icon"><FacetIcon name="layers" :size="32" /></div>
               <div class="summary__body">
                 <div class="summary__row">
                   <span class="summary__type">{{ result.type_label }}</span>
