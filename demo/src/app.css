@@ -111,7 +111,7 @@ body {
   font-weight: 600;
   color: var(--ft-text);
 }
-.panel__head :deep(.ft-icon) { color: var(--ft-brand-strong); }
+.panel__head .ft-icon { color: var(--ft-brand-strong); }
 .panel__body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
 .panel__body--flush { padding: 0; }
 
@@ -151,7 +151,7 @@ body {
 }
 .dropzone:hover { border-color: var(--ft-brand); }
 .dropzone--filled { border-style: solid; border-color: var(--ft-brand); color: var(--ft-text); }
-.dropzone :deep(.ft-icon) { color: var(--ft-brand-strong); }
+.dropzone .ft-icon { color: var(--ft-brand-strong); }
 .dropzone strong { font-size: 13.5px; color: var(--ft-text); }
 .dropzone__hint { font-size: 12px; }
 
@@ -170,7 +170,7 @@ body {
   border: 1px dashed var(--ft-border);
   border-radius: var(--ft-radius);
 }
-.empty :deep(.ft-icon) { opacity: 0.5; }
+.empty .ft-icon { opacity: 0.5; }
 
 /* Brand gradient summary card */
 .summary {
@@ -199,7 +199,8 @@ body {
 .metric { display: flex; flex-direction: column; }
 .metric__value { font-family: var(--ft-font-display); font-size: 26px; font-weight: 700; line-height: 1; }
 .metric__label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin-top: 4px; }
-/* Stepper scrolls instead of squishing on narrow cards. */
-.summary__steps { overflow-x: auto; padding-bottom: 2px; }
+/* Let the pipeline wrap to a second line on narrow cards instead of
+   scrolling or squishing. */
+.summary__steps .ft-stepper { flex-wrap: wrap; row-gap: 10px; }
 
 .mono { font-family: var(--ft-font-mono); font-size: 12.5px; }
