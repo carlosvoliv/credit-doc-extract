@@ -179,7 +179,8 @@ html, body { height: 100%; }
 .summary__metrics { display: flex; gap: 28px; margin: 14px 0 16px; }
 .metric { display: flex; flex-direction: column; }
 .metric__value { font-family: var(--ft-font-display); font-size: 26px; font-weight: 700; line-height: 1; }
-.metric__label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin-top: 4px; }
+.metric__label { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; margin-top: 5px; }
+.metric__label .ft-icon { opacity: 0.9; }
 /* Let the pipeline wrap to a second line on narrow cards instead of
    scrolling or squishing. */
 .summary__steps .ft-stepper { flex-wrap: wrap; row-gap: 10px; }
