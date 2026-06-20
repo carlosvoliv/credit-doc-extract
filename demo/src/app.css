@@ -1,4 +1,14 @@
 html, body { height: 100%; }
+/* The library bundle ships tokens but not a base layer, so paint the page
+   canvas from theme tokens — this is what makes the whole UI re-theme. */
+body {
+  margin: 0;
+  background: var(--ft-surface-base);
+  color: var(--ft-text);
+  font-family: var(--ft-font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
 #app { min-height: 100%; }
 
 .shell {
@@ -12,7 +22,7 @@ html, body { height: 100%; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
   padding: 16px 0;
   background: var(--ft-surface-1);
   border-right: 1px solid var(--ft-border);
@@ -30,56 +40,57 @@ html, body { height: 100%; }
   font-size: 14px;
   letter-spacing: -0.02em;
 }
-.rail__nav { display: flex; flex-direction: column; gap: 6px; }
-.rail__theme {
+.rail__link {
   margin-top: auto;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--ft-border);
+  display: grid;
+  place-items: center;
   border-radius: var(--ft-radius-sm);
-  background: var(--ft-surface-base);
   color: var(--ft-text-soft);
-  cursor: pointer;
-  font-size: 15px;
+  text-decoration: none;
 }
-.rail__theme:hover { color: var(--ft-text); border-color: var(--ft-brand); }
+.rail__link:hover { color: var(--ft-brand); background: var(--ft-neutral-bg); }
 
 /* ── Main ──────────────────────────────────────────────────────────────── */
 .main {
   flex: 1;
   min-width: 0;
-  padding: 28px 36px 56px;
-  max-width: 1180px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px clamp(16px, 4vw, 40px) 56px;
+  box-sizing: border-box;
 }
 .topbar {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  flex-wrap: wrap;
   margin-bottom: 24px;
 }
 .title {
   margin: 0;
   font-family: var(--ft-font-display);
-  font-size: 26px;
+  font-size: clamp(20px, 3vw, 26px);
   font-weight: 800;
   letter-spacing: -0.02em;
-  /* Gradient-clipped heading — the FMZ signature. */
   background: var(--ft-header-grad);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .subtitle { margin: 4px 0 0; color: var(--ft-text-soft); font-size: 13.5px; }
+.topbar__tools { display: flex; align-items: center; gap: 12px; }
+.theme-pick { width: 170px; }
 
+/* ── Workspace: responsive, no squish ──────────────────────────────────── */
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 22px;
   align-items: start;
-}
-@media (max-width: 900px) {
-  .workspace { grid-template-columns: 1fr; }
 }
 
 /* ── Soft panels ───────────────────────────────────────────────────────── */
@@ -101,7 +112,7 @@ html, body { height: 100%; }
   color: var(--ft-text);
 }
 .panel__head :deep(.ft-icon) { color: var(--ft-brand-strong); }
-.panel__body { padding: 16px 18px; }
+.panel__body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
 .panel__body--flush { padding: 0; }
 
 .doc-input {
@@ -122,10 +133,32 @@ html, body { height: 100%; }
   border-color: var(--ft-brand);
   box-shadow: 0 0 0 3px var(--ft-kpi-total-ring);
 }
-.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+
+/* File dropzone */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 36px 20px;
+  border: 1.5px dashed var(--ft-border);
+  border-radius: var(--ft-radius-sm);
+  background: var(--ft-surface-base);
+  color: var(--ft-text-soft);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.dropzone:hover { border-color: var(--ft-brand); }
+.dropzone--filled { border-style: solid; border-color: var(--ft-brand); color: var(--ft-text); }
+.dropzone :deep(.ft-icon) { color: var(--ft-brand-strong); }
+.dropzone strong { font-size: 13.5px; color: var(--ft-text); }
+.dropzone__hint { font-size: 12px; }
+
+.actions { display: flex; justify-content: flex-end; gap: 10px; }
 
 /* ── Results ───────────────────────────────────────────────────────────── */
-.results { display: flex; flex-direction: column; gap: 18px; }
+.results { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .empty {
   display: flex;
   flex-direction: column;
@@ -139,7 +172,7 @@ html, body { height: 100%; }
 }
 .empty :deep(.ft-icon) { opacity: 0.5; }
 
-/* Brand gradient summary card — the UserInfoCard analogue. */
+/* Brand gradient summary card */
 .summary {
   display: flex;
   gap: 18px;
@@ -151,8 +184,8 @@ html, body { height: 100%; }
 }
 .summary__icon {
   flex: 0 0 auto;
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
   border-radius: var(--ft-radius);
@@ -160,21 +193,13 @@ html, body { height: 100%; }
 }
 .summary__body { flex: 1; min-width: 0; }
 .summary__row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.summary__type {
-  font-family: var(--ft-font-display);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-.summary__id {
-  font-family: var(--ft-font-mono);
-  font-size: 11px;
-  opacity: 0.75;
-}
+.summary__type { font-family: var(--ft-font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.summary__id { font-family: var(--ft-font-mono); font-size: 11px; opacity: 0.75; word-break: break-all; }
 .summary__metrics { display: flex; gap: 28px; margin: 14px 0 16px; }
 .metric { display: flex; flex-direction: column; }
-.metric__value { font-family: var(--ft-font-display); font-size: 28px; font-weight: 700; line-height: 1; }
+.metric__value { font-family: var(--ft-font-display); font-size: 26px; font-weight: 700; line-height: 1; }
 .metric__label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin-top: 4px; }
-.summary__steps { margin-top: 4px; }
+/* Stepper scrolls instead of squishing on narrow cards. */
+.summary__steps { overflow-x: auto; padding-bottom: 2px; }
 
 .mono { font-family: var(--ft-font-mono); font-size: 12.5px; }

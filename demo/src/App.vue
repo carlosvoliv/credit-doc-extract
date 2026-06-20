@@ -6,8 +6,9 @@ import {
   FacetChip,
   FacetAlert,
   FacetStepper,
+  FacetTabs,
+  FacetSelect,
   FacetIcon,
-  FacetIconButton,
 } from 'facet-ui'
 
 const SAMPLE = `NOTA PROMISSÓRIA nº 0001/2025
@@ -22,11 +23,44 @@ Data de vencimento: 15/01/2026
 Emitente (devedor): João da Silva, CPF 529.982.247-25
 Credor (beneficiário): Acme Fomento Mercantil, CNPJ 11.222.333/0001-81`
 
+// ── Theme picker (every facet-ui preset) ──────────────────────────────────
+const THEMES = [
+  { value: 'facet-dark', label: 'Facet Dark' },
+  { value: '', label: 'Facet Light' },
+  { value: 'catppuccin', label: 'Catppuccin' },
+  { value: 'catppuccin-latte', label: 'Catppuccin Latte' },
+  { value: 'ethereal', label: 'Ethereal' },
+  { value: 'everforest', label: 'Everforest' },
+  { value: 'flexoki-light', label: 'Flexoki Light' },
+  { value: 'gruvbox', label: 'Gruvbox' },
+  { value: 'hackerman', label: 'Hackerman' },
+  { value: 'kanagawa', label: 'Kanagawa' },
+  { value: 'lumon', label: 'Lumon' },
+  { value: 'matte-black', label: 'Matte Black' },
+  { value: 'miasma', label: 'Miasma' },
+  { value: 'nord', label: 'Nord' },
+  { value: 'osaka-jade', label: 'Osaka Jade' },
+  { value: 'retro-82', label: 'Retro 82' },
+  { value: 'ristretto', label: 'Ristretto' },
+  { value: 'rose-pine', label: 'Rosé Pine' },
+  { value: 'tokyo-night', label: 'Tokyo Night' },
+  { value: 'vantablack', label: 'Vantablack' },
+  { value: 'white', label: 'White' },
+]
+const theme = ref('facet-dark')
+function applyTheme(value) {
+  theme.value = value
+  if (value) document.documentElement.dataset.theme = value
+  else delete document.documentElement.dataset.theme
+}
+
+// ── Extraction ────────────────────────────────────────────────────────────
+const mode = ref('text') // text | file
 const text = ref(SAMPLE)
+const file = ref(null)
 const loading = ref(false)
 const error = ref('')
 const result = ref(null)
-const dark = ref(true)
 
 const columns = [
   { key: 'label', label: 'Campo' },
@@ -48,27 +82,44 @@ const steps = computed(() => {
   ]
 })
 
+const canExtract = computed(() =>
+  mode.value === 'text' ? text.value.trim().length > 0 : !!file.value,
+)
+
 function chipVariant(c) {
   if (c >= 0.9) return 'ok'
   if (c >= 0.6) return 'blue'
   return 'grey'
 }
 
-function toggleTheme() {
-  dark.value = !dark.value
-  document.documentElement.dataset.theme = dark.value ? 'facet-dark' : ''
+function pickFile(e) {
+  const f = (e.dataTransfer || e.target).files?.[0]
+  if (f) file.value = f
+}
+
+function humanSize(bytes) {
+  return bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(1)} KB`
 }
 
 async function extract() {
+  if (!canExtract.value) return
   loading.value = true
   error.value = ''
   result.value = null
   try {
-    const res = await fetch('/api/extractions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ text: text.value }),
-    })
+    let options
+    if (mode.value === 'file') {
+      const form = new FormData()
+      form.append('file', file.value)
+      options = { method: 'POST', headers: { Accept: 'application/json' }, body: form }
+    } else {
+      options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ text: text.value }),
+      }
+    }
+    const res = await fetch('/api/extractions', options)
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
       throw new Error(body.message || `Falha na requisição (${res.status})`)
@@ -84,27 +135,32 @@ async function extract() {
 
 <template>
   <div class="shell">
-    <!-- App rail -->
+    <!-- App rail: brand + source link, nothing fake -->
     <aside class="rail">
       <div class="rail__logo" title="credit-doc-extract">CD</div>
-      <nav class="rail__nav">
-        <FacetIconButton name="layers" title="Documentos" />
-        <FacetIconButton name="clock" title="Histórico" />
-        <FacetIconButton name="code" title="API" />
-      </nav>
-      <button class="rail__theme" :title="dark ? 'Tema claro' : 'Tema escuro'" @click="toggleTheme">
-        {{ dark ? '☀' : '☾' }}
-      </button>
+      <a
+        class="rail__link"
+        href="https://github.com/carlosvoliv/credit-doc-extract"
+        target="_blank"
+        rel="noopener"
+        title="Código-fonte"
+      >
+        <FacetIcon name="code" :size="18" />
+      </a>
     </aside>
 
-    <!-- Main -->
     <div class="main">
       <header class="topbar">
-        <div>
+        <div class="topbar__title">
           <h1 class="title">Extração de Documentos de Crédito</h1>
           <p class="subtitle">Motor Laravel + DDD · classificação e extração estruturada</p>
         </div>
-        <FacetChip variant="blue" size="sm">API conectada</FacetChip>
+        <div class="topbar__tools">
+          <FacetChip variant="blue" size="sm">API conectada</FacetChip>
+          <div class="theme-pick">
+            <FacetSelect :model-value="theme" :options="THEMES" @update:model-value="applyTheme" />
+          </div>
+        </div>
       </header>
 
       <div class="workspace">
@@ -115,18 +171,52 @@ async function extract() {
             <span>Documento</span>
           </header>
           <div class="panel__body">
+            <FacetTabs
+              :model-value="mode"
+              :tabs="[
+                { value: 'text', label: 'Colar texto' },
+                { value: 'file', label: 'Importar arquivo' },
+              ]"
+              @update:model-value="mode = $event"
+            />
+
             <textarea
+              v-if="mode === 'text'"
               id="doc-input"
               v-model="text"
               name="document"
               class="doc-input"
               aria-label="Texto do documento"
               spellcheck="false"
-              rows="15"
+              rows="14"
             />
+
+            <label
+              v-else
+              class="dropzone"
+              :class="{ 'dropzone--filled': file }"
+              @dragover.prevent
+              @drop.prevent="pickFile"
+            >
+              <input type="file" accept=".pdf,.txt,application/pdf,text/plain" hidden @change="pickFile" />
+              <FacetIcon name="download" :size="26" />
+              <template v-if="file">
+                <strong>{{ file.name }}</strong>
+                <span class="dropzone__hint">{{ humanSize(file.size) }} · clique para trocar</span>
+              </template>
+              <template v-else>
+                <strong>Arraste um PDF ou clique para enviar</strong>
+                <span class="dropzone__hint">PDF ou TXT, até 10 MB</span>
+              </template>
+            </label>
+
             <div class="actions">
-              <FacetButton variant="ghost" @click="text = SAMPLE">Restaurar exemplo</FacetButton>
-              <FacetButton :loading="loading" @click="extract">Extrair</FacetButton>
+              <FacetButton v-if="mode === 'text'" variant="ghost" @click="text = SAMPLE">
+                Restaurar exemplo
+              </FacetButton>
+              <FacetButton :loading="loading" :disabled="!canExtract" @click="extract">
+                Extrair
+              </FacetButton>
             </div>
           </div>
         </section>
@@ -141,9 +231,8 @@ async function extract() {
           </div>
 
           <template v-else>
-            <!-- Brand gradient summary card -->
             <div class="summary">
-              <div class="summary__icon"><FacetIcon name="layers" :size="34" /></div>
+              <div class="summary__icon"><FacetIcon name="layers" :size="32" /></div>
               <div class="summary__body">
                 <div class="summary__row">
                   <span class="summary__type">{{ result.type_label }}</span>
@@ -159,11 +248,10 @@ async function extract() {
                     <span class="metric__label">Campos</span>
                   </div>
                 </div>
-                <FacetStepper :steps="steps" class="summary__steps" />
+                <div class="summary__steps"><FacetStepper :steps="steps" /></div>
               </div>
             </div>
 
-            <!-- Fields panel -->
             <section class="panel">
               <header class="panel__head">
                 <FacetIcon name="check" :size="15" />
