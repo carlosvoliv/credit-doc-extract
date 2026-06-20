@@ -222,12 +222,18 @@ async function extract() {
                 </div>
                 <div class="summary__metrics">
                   <div class="metric">
-                    <span class="metric__value">{{ confidencePct }}%</span>
-                    <span class="metric__label"><FacetIcon name="target" :size="11" /> Confiança</span>
+                    <FacetIcon name="target" :size="22" class="metric__icon" />
+                    <div class="metric__text">
+                      <span class="metric__value">{{ confidencePct }}%</span>
+                      <span class="metric__label">Confiança</span>
+                    </div>
                   </div>
                   <div class="metric">
-                    <span class="metric__value">{{ result.fields.length }}</span>
-                    <span class="metric__label"><FacetIcon name="list" :size="11" /> Campos</span>
+                    <FacetIcon name="list" :size="22" class="metric__icon" />
+                    <div class="metric__text">
+                      <span class="metric__value">{{ result.fields.length }}</span>
+                      <span class="metric__label">Campos</span>
+                    </div>
                   </div>
                 </div>
                 <div class="summary__steps"><FacetStepper :steps="steps" /></div>
