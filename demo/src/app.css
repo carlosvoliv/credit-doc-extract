@@ -1,42 +1,108 @@
-.page {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 40px 24px 64px;
+html, body { height: 100%; }
+#app { min-height: 100%; }
+
+.shell {
+  display: flex;
+  min-height: 100vh;
 }
 
-.hero {
-  margin-bottom: 32px;
+/* ── App rail ──────────────────────────────────────────────────────────── */
+.rail {
+  flex: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 0;
+  background: var(--ft-surface-1);
+  border-right: 1px solid var(--ft-border);
 }
-.eyebrow {
-  font-family: var(--ft-font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--ft-brand-strong);
-  margin-bottom: 10px;
-}
-.hero h1 {
-  font-family: var(--ft-font-display);
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 10px;
-  color: var(--ft-text);
-}
-.hero .sub {
-  max-width: 60ch;
-  color: var(--ft-text-soft);
-  margin: 0;
-}
-
-.grid {
+.rail__logo {
+  width: 38px;
+  height: 38px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  place-items: center;
+  border-radius: var(--ft-radius-sm);
+  background: var(--ft-header-grad);
+  color: #fff;
+  font-family: var(--ft-font-display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+.rail__nav { display: flex; flex-direction: column; gap: 6px; }
+.rail__theme {
+  margin-top: auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--ft-border);
+  border-radius: var(--ft-radius-sm);
+  background: var(--ft-surface-base);
+  color: var(--ft-text-soft);
+  cursor: pointer;
+  font-size: 15px;
+}
+.rail__theme:hover { color: var(--ft-text); border-color: var(--ft-brand); }
+
+/* ── Main ──────────────────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 36px 56px;
+  max-width: 1180px;
+}
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.title {
+  margin: 0;
+  font-family: var(--ft-font-display);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  /* Gradient-clipped heading — the FMZ signature. */
+  background: var(--ft-header-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.subtitle { margin: 4px 0 0; color: var(--ft-text-soft); font-size: 13.5px; }
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 22px;
   align-items: start;
 }
-@media (max-width: 820px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .workspace { grid-template-columns: 1fr; }
 }
+
+/* ── Soft panels ───────────────────────────────────────────────────────── */
+.panel {
+  background: var(--ft-surface-1);
+  border: 1px solid var(--ft-border);
+  border-radius: var(--ft-radius);
+  overflow: hidden;
+}
+.panel__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--ft-border);
+  font-family: var(--ft-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ft-text);
+}
+.panel__head :deep(.ft-icon) { color: var(--ft-brand-strong); }
+.panel__body { padding: 16px 18px; }
+.panel__body--flush { padding: 0; }
 
 .doc-input {
   width: 100%;
@@ -45,7 +111,7 @@
   font-size: 12.5px;
   line-height: 1.55;
   color: var(--ft-text);
-  background: var(--ft-surface-1);
+  background: var(--ft-surface-base);
   border: 1px solid var(--ft-border);
   border-radius: var(--ft-radius-sm);
   padding: 12px 14px;
@@ -56,25 +122,59 @@
   border-color: var(--ft-brand);
   box-shadow: 0 0 0 3px var(--ft-kpi-total-ring);
 }
+.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 
-.actions {
+/* ── Results ───────────────────────────────────────────────────────────── */
+.results { display: flex; flex-direction: column; gap: 18px; }
+.empty {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.placeholder {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 24px;
   color: var(--ft-text-soft);
-  font-size: 14px;
-  padding: 24px 0;
   text-align: center;
+  border: 1px dashed var(--ft-border);
+  border-radius: var(--ft-radius);
 }
+.empty :deep(.ft-icon) { opacity: 0.5; }
 
-.result { display: flex; flex-direction: column; gap: 16px; }
-.result__top { display: flex; align-items: center; gap: 12px; }
-.result__id {
+/* Brand gradient summary card — the UserInfoCard analogue. */
+.summary {
+  display: flex;
+  gap: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ft-radius);
+  background: var(--ft-header-grad);
+  color: #fff;
+  box-shadow: var(--ft-card-shadow);
+}
+.summary__icon {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--ft-radius);
+  background: rgba(255, 255, 255, 0.14);
+}
+.summary__body { flex: 1; min-width: 0; }
+.summary__row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.summary__type {
+  font-family: var(--ft-font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.summary__id {
   font-family: var(--ft-font-mono);
   font-size: 11px;
-  color: var(--ft-text-soft);
+  opacity: 0.75;
 }
+.summary__metrics { display: flex; gap: 28px; margin: 14px 0 16px; }
+.metric { display: flex; flex-direction: column; }
+.metric__value { font-family: var(--ft-font-display); font-size: 28px; font-weight: 700; line-height: 1; }
+.metric__label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin-top: 4px; }
+.summary__steps { margin-top: 4px; }
+
+.mono { font-family: var(--ft-font-mono); font-size: 12.5px; }
