@@ -59,7 +59,8 @@ const confidencePct = computed(() =>
 const docNumber = computed(() => {
   if (!result.value) return ''
   const field = result.value.fields?.find((f) => f.name === 'document_number')
-  if (field?.value) return field.value
+  // Show just the sequential number (drop any "/year" suffix, e.g. 0001/2025 → 0001).
+  if (field?.value) return field.value.split('/')[0]
   return result.value.id ? result.value.id.split('-')[0] : ''
 })
 
