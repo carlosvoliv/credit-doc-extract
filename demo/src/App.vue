@@ -10,6 +10,7 @@ import {
   FacetSelect,
   FacetIcon,
 } from 'facet-ui'
+import themeManifest from 'facet-ui/themes.json'
 
 const SAMPLE = `NOTA PROMISSÓRIA nº 0001/2025
 
@@ -23,29 +24,11 @@ Data de vencimento: 15/01/2026
 Emitente (devedor): João da Silva, CPF 529.982.247-25
 Credor (beneficiário): Acme Fomento Mercantil, CNPJ 11.222.333/0001-81`
 
-// ── Theme picker (every facet-ui preset) ──────────────────────────────────
+// ── Theme picker — list comes straight from facet-ui's exported manifest ───
 const THEMES = [
   { value: 'facet-dark', label: 'Facet Dark' },
   { value: '', label: 'Facet Light' },
-  { value: 'catppuccin', label: 'Catppuccin' },
-  { value: 'catppuccin-latte', label: 'Catppuccin Latte' },
-  { value: 'ethereal', label: 'Ethereal' },
-  { value: 'everforest', label: 'Everforest' },
-  { value: 'flexoki-light', label: 'Flexoki Light' },
-  { value: 'gruvbox', label: 'Gruvbox' },
-  { value: 'hackerman', label: 'Hackerman' },
-  { value: 'kanagawa', label: 'Kanagawa' },
-  { value: 'lumon', label: 'Lumon' },
-  { value: 'matte-black', label: 'Matte Black' },
-  { value: 'miasma', label: 'Miasma' },
-  { value: 'nord', label: 'Nord' },
-  { value: 'osaka-jade', label: 'Osaka Jade' },
-  { value: 'retro-82', label: 'Retro 82' },
-  { value: 'ristretto', label: 'Ristretto' },
-  { value: 'rose-pine', label: 'Rosé Pine' },
-  { value: 'tokyo-night', label: 'Tokyo Night' },
-  { value: 'vantablack', label: 'Vantablack' },
-  { value: 'white', label: 'White' },
+  ...themeManifest.map((t) => ({ value: t.name, label: t.label })),
 ]
 const theme = ref('facet-dark')
 function applyTheme(value) {

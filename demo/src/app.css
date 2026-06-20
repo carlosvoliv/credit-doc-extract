@@ -1,14 +1,5 @@
+/* Body canvas + focus/motion come from `facet-ui/base` (imported in main.js). */
 html, body { height: 100%; }
-/* The library bundle ships tokens but not a base layer, so paint the page
-   canvas from theme tokens — this is what makes the whole UI re-theme. */
-body {
-  margin: 0;
-  background: var(--ft-surface-base);
-  color: var(--ft-text);
-  font-family: var(--ft-font-body);
-  -webkit-font-smoothing: antialiased;
-  transition: background 0.25s ease, color 0.25s ease;
-}
 #app { min-height: 100%; }
 
 .shell {
