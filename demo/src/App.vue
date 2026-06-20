@@ -55,6 +55,14 @@ const confidencePct = computed(() =>
   result.value ? Math.round(result.value.confidence * 100) : 0,
 )
 
+// Big identifier: prefer the extracted document_number field, else a short UUID.
+const docNumber = computed(() => {
+  if (!result.value) return ''
+  const field = result.value.fields?.find((f) => f.name === 'document_number')
+  if (field?.value) return field.value
+  return result.value.id ? result.value.id.split('-')[0] : ''
+})
+
 const steps = computed(() => {
   const done = !!result.value
   return [
@@ -216,24 +224,19 @@ async function extract() {
           <template v-else>
             <div class="summary">
               <div class="summary__body">
-                <div class="summary__row">
-                  <span class="summary__type">{{ result.type_label }}</span>
-                  <span class="summary__id">{{ result.id }}</span>
+                <div class="summary__head">
+                  <span class="summary__eyebrow">{{ result.type_label }}</span>
+                  <span class="summary__num">#{{ docNumber }}</span>
+                  <span class="summary__uuid">{{ result.id }}</span>
                 </div>
-                <div class="summary__metrics">
-                  <div class="metric">
-                    <FacetIcon name="target" :size="22" class="metric__icon" />
-                    <div class="metric__text">
-                      <span class="metric__value">{{ confidencePct }}%</span>
-                      <span class="metric__label">Confiança</span>
-                    </div>
+                <div class="summary__chips">
+                  <div class="info-chip">
+                    <span class="info-chip__label">Confiança</span>
+                    <strong class="info-chip__value">{{ confidencePct }}%</strong>
                   </div>
-                  <div class="metric">
-                    <FacetIcon name="list" :size="22" class="metric__icon" />
-                    <div class="metric__text">
-                      <span class="metric__value">{{ result.fields.length }}</span>
-                      <span class="metric__label">Campos</span>
-                    </div>
+                  <div class="info-chip">
+                    <span class="info-chip__label">Campos</span>
+                    <strong class="info-chip__value">{{ result.fields.length }}</strong>
                   </div>
                 </div>
                 <div class="summary__steps"><FacetStepper :steps="steps" /></div>

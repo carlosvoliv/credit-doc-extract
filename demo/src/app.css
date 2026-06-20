@@ -173,15 +173,52 @@ html, body { height: 100%; }
   box-shadow: var(--ft-card-shadow);
 }
 .summary__body { min-width: 0; }
-.summary__row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.summary__type { font-family: var(--ft-font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-.summary__id { font-family: var(--ft-font-mono); font-size: 11px; opacity: 0.75; word-break: break-all; }
-.summary__metrics { display: flex; gap: 28px; margin: 14px 0 16px; }
-.metric { display: flex; align-items: center; gap: 10px; }
-.metric__icon { opacity: 0.85; flex: 0 0 auto; }
-.metric__text { display: flex; flex-direction: column; }
-.metric__value { font-family: var(--ft-font-display); font-size: 26px; font-weight: 700; line-height: 1; }
-.metric__label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; margin-top: 4px; }
+
+/* Header: eyebrow (doc type) → big #identifier → muted uuid — mirrors the
+   clt-solis drawer header. */
+.summary__head { min-width: 0; }
+.summary__eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+.summary__num {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--ft-font-display);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+.summary__uuid {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--ft-font-mono);
+  font-size: 11px;
+  opacity: 0.7;
+  word-break: break-all;
+}
+
+/* Info chips: white-alpha pill, faint label + bold value (clt-solis kpi-chip). */
+.summary__chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 16px; }
+.info-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.info-chip__label { opacity: 0.78; font-weight: 500; }
+.info-chip__value { font-weight: 700; }
 /* Let the pipeline wrap to a second line on narrow cards instead of
    scrolling or squishing. */
 .summary__steps .ft-stepper { flex-wrap: wrap; row-gap: 10px; }
